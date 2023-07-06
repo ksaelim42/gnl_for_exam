@@ -68,6 +68,7 @@ void	read_all(char **line, int fd)
 
 char	*get_next_line(int fd)
 {
+	static char *head;
 	static char	*line;
 	char		*new_line;
 	int			len;
@@ -75,10 +76,20 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!line)
+	{
 		read_all(&line, fd);
+		head = line;
+	}
 	len = ft_strlen_mode(line, '\n');
 	if (!len)
+	{
+		if (head)
+		{
+			free(head);
+			head = NULL;
+		}
 		return (NULL);
+	}
 	new_line = ft_strldup(line, len);
 	line += len;
 	return (new_line);
@@ -88,30 +99,18 @@ char	*get_next_line(int fd)
 // {
 // 	int	fd;
 // 	char	*line;
+// 	int	i;
 
-// 	fd = open("buffer.text", O_RDONLY);
+// 	// fd = open("buffer.text", O_RDONLY);
+// 	fd = open("line.text", O_RDONLY);
 // 	// fd = open("em.text", O_RDONLY);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); //1
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); //2
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); //3
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); // 4
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); //5
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s\n", line); //6
-// 	free(line);
-// 	line = get_next_line(fd);
-// 	printf("%s", line); //7
-// 	free(line);
-// 	// line = read_all(fd);
+// 	i = 0;
+// 	while (i < 15)
+// 	{
+// 		line = get_next_line(fd);
+// 		printf("%s", line); //1
+// 		free(line);
+// 		i++;
+// 	}
 // 	return (0);
 // }
